@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المدرسة النموذجية | الصفحة الرئيسية</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/contentful@latest/dist/contentful.browser.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            opacity: 0; /* لإخفاء الصفحة حتى يتم تحميل المحتوى لمنع الوميض */
+            transition: opacity 0.5s ease-in-out;
+        }
+        .hero-gradient {
+            background: linear-gradient(to top, rgba(17, 24, 39, 0.8), rgba(17, 24, 39, 0.4));
+        }
+        .loader {
+            border: 5px solid #f3f3f3; /* Light grey */
+            border-top: 5px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-white">
+
+    <div id="loader" class="loader"></div>
+
+    <header id="hero-section" class="relative min-h-screen bg-cover bg-center flex items-center justify-center text-white text-center">
+        <div class="absolute inset-0 hero-gradient"></div>
+        <div class="relative z-10 p-8">
+            <h1 id="hero-title" class="text-5xl md:text-7xl font-extrabold mb-4 text-shadow-lg"></h1>
+            <p id="hero-subtitle" class="text-lg md:text-2xl mb-8 max-w-3xl mx-auto"></p>
+            <a id="hero-button" href="#services" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-10 rounded-full text-lg transition duration-300 ease-in-out transform hover:scale-105 shadow-lg"></a>
+        </div>
+    </header>
+
+    <section id="services" class="py-20 bg-gray-100">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 id="services-title" class="text-4xl font-bold text-gray-800"></h2>
+                <p id="services-subtitle" class="text-gray-600 mt-2"></p>
+            </div>
+            <div id="services-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 text-white text-center p-8">
+        <p>جميع الحقوق محفوظة للمصمم علي الهلال © 2025</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- إعدادات Contentful ---
+            // !!! هام: استبدل هذه القيم بالقيم الخاصة بك !!!
+            const CONTENTFUL_SPACE_ID = 'dt5vcl09w3gi';
+            const CONTENTFUL_ACCESS_TOKEN = 'ZStlATeVinfjwkspDTeI3-tqvC_otOxYtD9UGsEcZ_c';
+
+            // --- عناصر الصفحة ---
+            const loader = document.getElementById('loader');
+            const body = document.querySelector('body');
+            const heroSection = document.getElementById('hero-section');
+            const heroTitle = document.getElementById('hero-title');
+            const heroSubtitle = document.getElementById('hero-subtitle');
+            const heroButton = document.getElementById('hero-button');
+            const servicesTitle = document.getElementById('services-title');
+            const servicesSubtitle = document.getElementById('services-subtitle');
+            const servicesGrid = document.getElementById('services-grid');
+
+            // --- تهيئة عميل Contentful ---
+            const client = contentful.createClient({
+                space: CONTENTFUL_SPACE_ID,
+                accessToken: CONTENTFUL_ACCESS_TOKEN,
+            });
+
+            // --- مكتبة الأيقونات ---
+            // (تأكد من أن الأسماء هنا تطابق ما تكتبه في حقل iconName في Contentful)
+            const icons = {
+                'classroom': `<svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>`,
+                'curriculum': `<svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>`,
+                'activities': `<svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-1.414v.001M9 12h.01M15 12h.01M12 15h.01M12 9h.01M12 6v.01" /></svg>`,
+                'labs': `<svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>`,
+                'health': `<svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>`,
+                'transport': `<svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10l2-2h8a1 1 0 001-1zM21 12h-6" /></svg>`,
+                'library': `<svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" /></svg>`,
+                'counseling': `<svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>`,
+            };
+            const iconColors = ['blue', 'orange', 'teal', 'purple', 'red', 'green', 'yellow', 'indigo'];
+
+            // --- جلب المحتوى وعرضه ---
+            // نستخدم Promise.allSettled لجلب النوعين من المحتوى في نفس الوقت
+            Promise.allSettled([
+                client.getEntries({ content_type: 'renewed', include: 1, limit: 1 }),
+                client.getEntries({ content_type: 'serviceCard' })
+            ])
+            .then(([landingPageResult, servicesResult]) => {
+                let hasError = false;
+                let errorMessages = [];
+
+                // التحقق من وجود أخطاء في محتوى الصفحة الرئيسية
+                if (landingPageResult.status === 'rejected' || (landingPageResult.status === 'fulfilled' && landingPageResult.value.items.length === 0)) {
+                    hasError = true;
+                    errorMessages.push({
+                        title: 'لم يتم العثور على محتوى الصفحة الرئيسية',
+                        details: `تأكد من أن لديك نوع محتوى بالـ ID الصحيح <code>landingPage</code>، وأنه يحتوي على مدخل (entry) واحد على الأقل، والأهم، أن هذا المدخل <b>منشور (Published)</b> وليس مسودة (Draft).`
+                    });
+                }
+                
+                // التحقق من وجود أخطاء في محتوى الخدمات
+                if (servicesResult.status === 'rejected' || (servicesResult.status === 'fulfilled' && servicesResult.value.items.length === 0)) {
+                    hasError = true;
+                    errorMessages.push({
+                        title: 'لم يتم العثور على محتوى الخدمات',
+                        details: `تأكد من أن لديك نوع محتوى بالـ ID الصحيح <code>services</code>، وأنه يحتوي على مدخل واحد على الأقل، والأهم، أن جميع مدخلات الخدمات <b>منشورة (Published)</b> وليست مسودة (Draft).`
+                    });
+                }
+
+                // في حال وجود أي خطأ، يتم عرض رسالة مفصلة والتوقف
+                if (hasError) {
+                    loader.style.display = 'none';
+                    let html = `<div class="text-right p-10 bg-red-50 rounded-lg m-5 border-2 border-dashed border-red-200 shadow-lg">
+                                    <h2 class="text-3xl font-bold text-red-800">خطأ في إعدادات Contentful!</h2>
+                                    <p class="mt-3 text-gray-700">الكود يتصل بنجاح، لكنه لا يجد المحتوى. الرجاء التحقق من النقاط التالية في حسابك:</p>
+                                    <ul class="list-disc list-inside mt-4 space-y-4">`;
+                    errorMessages.forEach(err => {
+                        html += `<li class="text-red-700"><b class="text-red-900">${err.title}</b><p class="text-gray-600 text-sm pr-5">${err.details}</p></li>`;
+                    });
+                    html += `</ul></div>`;
+                    body.innerHTML = html;
+                    body.style.opacity = 1;
+                    return;
+                }
+
+                // --- إذا كان كل شيء ناجحاً، يتم عرض المحتوى ---
+                const landingPageResponse = landingPageResult.value;
+                const servicesResponse = servicesResult.value;
+
+                // عرض محتوى الصفحة الرئيسية
+                const pageContent = landingPageResponse.items[0].fields;
+                heroSection.style.backgroundImage = `url('https:${pageContent.heroBackgroundImage.fields.file.url}')`;
+                heroTitle.textContent = pageContent.heroTitle;
+                heroSubtitle.textContent = pageContent.heroSubtitle;
+                heroButton.textContent = pageContent.heroButtonText;
+                servicesTitle.textContent = pageContent.servicesTitle;
+                servicesSubtitle.textContent = pageContent.servicesSubtitle;
+
+                // عرض بطاقات الخدمات
+                servicesGrid.innerHTML = ''; // تفريغ المحتوى المؤقت
+                servicesResponse.items.forEach((item, index) => {
+                    const { cardTitle: title, iconName } = item.fields;
+                    const color = iconColors[index % iconColors.length];
+                    const card = `
+                        <div class="bg-white p-8 rounded-xl shadow-md text-center transform hover:-translate-y-2 transition-transform duration-300">
+                            <div class="bg-${color}-100 text-${color}-600 rounded-full h-20 w-20 flex items-center justify-center mx-auto mb-6">
+                                ${icons[iconName] || icons['classroom']}
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800">${title}</h3>
+                        </div>
+                    `;
+                    servicesGrid.innerHTML += card;
+                });
+
+                // إظهار محتوى الصفحة بعد اكتمال التحميل
+                loader.style.display = 'none';
+                body.style.opacity = 1;
+
+            })
+            .catch(error => { // للتعامل مع أخطاء غير متوقعة مثل مشاكل الاتصال
+                console.error('An unexpected error occurred:', error);
+                loader.style.display = 'none';
+                body.innerHTML = `<div class="text-center p-10 text-red-600">
+                                    <h2 class="text-2xl font-bold">حدث خطأ غير متوقع.</h2>
+                                    <p>يرجى مراجعة console المتصفح لمزيد من التفاصيل.</p>
+                                  </div>`;
+                body.style.opacity = 1;
+            });
+        });
+    </script>
+</body>
+</html>
